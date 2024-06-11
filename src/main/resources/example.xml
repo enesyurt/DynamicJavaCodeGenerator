@@ -1,0 +1,16 @@
+<root>
+    <dataType>
+        <name>id</name>
+        <type>int</type>
+    </dataType>
+    <dataType>
+        <name>name</name>
+        <type>String</type>
+    </dataType>
+    <enumType>
+        <name>Status</name>
+        <value>ACTIVE</value>
+        <value>INACTIVE</value>
+        <value>DELETED</value>
+    </enumType>
+</root>
