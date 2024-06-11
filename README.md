@@ -100,7 +100,7 @@ public enum Status {
 ```
 
 ## Contributing
-If you would like to contribute to this project, please fork the repository and submit a pull request. We welcome any improvements or bug fixes.
+If you would like to contribute to this project, please fork the repository and submit a pull request. Any improvements or bug fixes are welcomed.
 
 ## Contact
 For any inquiries or questions, please contact [enesyurt78@gmail.com](mailto:enesyurt78@gmail.com).
