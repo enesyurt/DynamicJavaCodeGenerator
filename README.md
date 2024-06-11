@@ -1,5 +1,7 @@
 # Java Code Generator from XML
 
+This is one of the tasks given during my internship at HAVELSAN.
+
 ## Overview
 
 This project is a Java-based tool that generates Java class and enum files from an XML input file. The purpose of this project is to automate the creation of Java classes and enums based on predefined structures defined in an XML file.
