@@ -12,7 +12,7 @@
     <typedef name="LatitudeType" min="-90.0" max="90.0" unit="degree" >
         <double/>
     </typedef>
-    <typedef name="LongtitudeType" min="-180.0" max="180.0" unit="degree" >
+    <typedef name="LongitudeType" min="-180.0" max="180.0" unit="degree" >
         <double/>
     </typedef>
     <typedef name="AltitudeDepthType" min="-100000.0" max="100000.0" unit="meter" >
@@ -38,7 +38,7 @@
     </enumeration>
     <record name="GeoPositionType" >
         <field name="Latitude" type="LatitudeType" />
-        <field name="Longtitude" type="LongtitudeType" />
+        <field name="Longitude" type="LongitudeType" />
         <field name="AltitudeDepth" type="AltitudeDepthType" />
     </record>
     <array name="TestInfogramItemListType" type="GeoPoisitionType" length="10" />
