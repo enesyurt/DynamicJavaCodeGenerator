@@ -5,12 +5,11 @@ import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-
 
 public class XMLParser {
 
@@ -31,7 +30,9 @@ public class XMLParser {
         for (int i = 0; i < typedefs.getLength(); i++) {
             Element typedef = (Element) typedefs.item(i);
             String typeName = typedef.getAttribute("name");
-            String typeValue = typedef.getAttribute("type");
+            Element typeElement = (Element) typedef.getFirstChild();
+            String typeValue = typeElement.getTagName();
+            
             typeDefinitions.put(typeName, typeValue);
         }
     }
@@ -40,18 +41,15 @@ public class XMLParser {
         return document.getDocumentElement();
     }
 
-    
     public NodeList getElementsByTagName(Document document, String tagName) {
         return document.getElementsByTagName(tagName);
     }
 
     private String convertType (String xmlType) {
-        // Type halihazırda tanımlanmışsa
         if (typeDefinitions.containsKey(xmlType)) {
             return typeDefinitions.get(xmlType);
         }
-        // tanımlanmamışsa 
-        switch (xmlType){
+        switch (xmlType) {
             case "long":
                 return "long";
             case "short":
@@ -63,17 +61,25 @@ public class XMLParser {
         }
     }
 
-    private String capitalize(String str){
+    private String capitalize(String str) {
         if (str == null || str.length() == 0) {
             return str;
         }
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public void generateRecordClass (Document document) throws IOException {
+    private void ensureGeneratedFolderExists() {
+        File folder = new File("generated");
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+    }
+
+    public void generateRecordClass(Document document) throws IOException {
+        ensureGeneratedFolderExists();
         NodeList records = getElementsByTagName(document, "record");
         
-        for(int i = 0; i < records.getLength(); i++) {
+        for (int i = 0; i < records.getLength(); i++) {
             Element recordElement = (Element) records.item(i);
             String recordName = recordElement.getAttribute("name");
 
@@ -85,7 +91,7 @@ public class XMLParser {
                         .append(" {\n\n");
 
             NodeList fields = recordElement.getElementsByTagName("field");
-            for (int j = 0; j < fields.getLength(); j++ ) {
+            for (int j = 0; j < fields.getLength(); j++) {
                 Element fieldElement = (Element) fields.item(j);
                 String fieldName = fieldElement.getAttribute("name");
                 String fieldType = fieldElement.getAttribute("type");
@@ -96,14 +102,12 @@ public class XMLParser {
                             .append(";\n");
             }
             
-            classContent.append("\n    //Getters and Setters\n");
-            for (int j=0; j < fields.getLength(); j++) {
+            classContent.append("\n    // Getters and Setters\n");
+            for (int j = 0; j < fields.getLength(); j++) {
                 Element fieldElement = (Element) fields.item(j);
                 String fieldName = fieldElement.getAttribute("name");
                 String fieldType = fieldElement.getAttribute("type");
                 
-
-                // Getter fonskiyonları
                 classContent.append("    public ")
                             .append(convertType(fieldType))
                             .append(" get")
@@ -113,12 +117,12 @@ public class XMLParser {
                             .append(fieldName)
                             .append(";\n")
                             .append("    }\n");
+                System.out.println(fieldType);
 
-                // Setter fonksiyonları
                 classContent.append("    public void set")
                             .append(capitalize(fieldName))
                             .append("(")
-                            .append(fieldType)
+                            .append(convertType(fieldType))
                             .append(" ")
                             .append(fieldName)
                             .append(") {\n")
@@ -131,17 +135,14 @@ public class XMLParser {
             }
             classContent.append("}\n");
 
-            // Classı dosyaya kaydet
-
             try (FileWriter writer = new FileWriter("generated/" + recordName + ".java")) {
                 writer.write(classContent.toString());
             }
         }
-    } // generateRecordClass
-
-    
+    }
 
     public void generateMainModelClass(Document document) throws IOException {
+        ensureGeneratedFolderExists();
         Element infogram = (Element) getElementsByTagName(document, "infogram").item(0);
         String infogramName = infogram.getAttribute("name");
 
@@ -153,7 +154,7 @@ public class XMLParser {
                     .append("import java.util.ArrayList;\n\n")
                     .append("public class TestInfogramDefinitionModel {\n\n");
 
-        for(int i = 0; i < fields.getLength(); i++) {
+        for (int i = 0; i < fields.getLength(); i++) {
             Element fieldElement = (Element) fields.item(i);
             String fieldName = fieldElement.getAttribute("name");
             String fieldType = fieldElement.getAttribute("type");
@@ -164,13 +165,11 @@ public class XMLParser {
                         .append(";\n");
         }
         classContent.append("\n     // Getters and Setters \n");
-        for(int i = 0; i < fields.getLength(); i++) {
+        for (int i = 0; i < fields.getLength(); i++) {
             Element fieldElement = (Element) fields.item(i);
             String fieldName = fieldElement.getAttribute("name");
             String fieldType = fieldElement.getAttribute("type");
 
-
-            // Getter fonskiyonlar
             classContent.append("    public ")
                         .append(convertType(fieldType))
                         .append(" get")
@@ -180,8 +179,6 @@ public class XMLParser {
                         .append(fieldName)
                         .append(";\n")
                         .append("    }\n");
-
-            // Setter fonksiyonlar
 
             classContent.append("    public void set")
                         .append(capitalize(fieldName))
@@ -196,76 +193,63 @@ public class XMLParser {
                         .append(fieldName)
                         .append(";\n")
                         .append("    }\n");
-                        classContent.append("}\n");
-                        
-                        // Dosyaya yaz
+        }
+        classContent.append("}\n");
+        
         try (FileWriter writer = new FileWriter("generated/" + infogramName + "Model.java")) {
             writer.write(classContent.toString());
         }
-                        
-        }
-    } // generateMainModelClass
+    }
 
     public void generateEnumClasses(Document document) throws IOException {
-
+        ensureGeneratedFolderExists();
         NodeList enumerations = getElementsByTagName(document, "enumeration");
         
         StringBuilder enumContent = new StringBuilder();
         enumContent.append("package test.model.common.datatype;\n")
                    .append("public class CommonTypes {\n\n");
         for (int i = 0; i < enumerations.getLength(); i++) {
-
             Element enumElement = (Element) enumerations.item(i);
             String enumName = enumElement.getAttribute("name");
 
             enumContent.append("    public enum ")
                        .append(enumName)
-                       .append("{\n\n");
+                       .append(" {\n\n");
             NodeList consts = enumElement.getElementsByTagName("const");
             
-            for (int j = 0; j < consts.getLength(); j++ ) {
-
+            for (int j = 0; j < consts.getLength(); j++) {
                 Element constElement = (Element) consts.item(j);
                 String constName = constElement.getAttribute("name");
 
                 enumContent.append("        ")
                            .append(constName);
-                if (j < consts.getLength()-1) {
+                if (j < consts.getLength() - 1) {
                     enumContent.append(",");
-                }
-                else {
+                } else {
                     enumContent.append(";");
                 }
                 enumContent.append("\n");
             }
             enumContent.append("    }\n");  
-        
-        } // end of each enums
+        }
         enumContent.append("}\n");
 
-        // write it to the file
-        try(FileWriter writer = new FileWriter("generated/CommonTypes.java")) {
+        try (FileWriter writer = new FileWriter("generated/CommonTypes.java")) {
             writer.write(enumContent.toString());
         }
-    } // generateEnumClasses
-
+    }
 
     public static void main(String[] args) {
         try {
-    
             XMLParser parser = new XMLParser();
-            Document document = parser.parseXmlFile("TestInfogramDefinition.xml");
-    
+            Document document = parser.parseXmlFile("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main/resources/TestInfogramDefinition.xml");
             parser.generateRecordClass(document);
             parser.generateMainModelClass(document);
             parser.generateEnumClasses(document);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-    } // main
-} //XMLParser
-
-
-
+        
+    }
+}
