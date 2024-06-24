@@ -133,7 +133,7 @@ public class XMLParser {
 
             // Classı dosyaya kaydet
 
-            try (FileWriter writer = new FileWriter(recordName + ".java")) {
+            try (FileWriter writer = new FileWriter("generated/" + recordName + ".java")) {
                 writer.write(classContent.toString());
             }
         }
@@ -199,7 +199,7 @@ public class XMLParser {
                         classContent.append("}\n");
                         
                         // Dosyaya yaz
-        try (FileWriter writer = new FileWriter(infogramName + "Model.java")) {
+        try (FileWriter writer = new FileWriter("generated/" + infogramName + "Model.java")) {
             writer.write(classContent.toString());
         }
                         
@@ -209,13 +209,63 @@ public class XMLParser {
     public void generateEnumClasses(Document document) throws IOException {
 
         NodeList enumerations = getElementsByTagName(document, "enumeration");
-
+        
         StringBuilder enumContent = new StringBuilder();
         enumContent.append("package test.model.common.datatype;\n")
                    .append("public class CommonTypes {\n\n");
-        for (int i = 0)
+        for (int i = 0; i < enumerations.getLength(); i++) {
+
+            Element enumElement = (Element) enumerations.item(i);
+            String enumName = enumElement.getAttribute("name");
+
+            enumContent.append("    public enum ")
+                       .append(enumName)
+                       .append("{\n\n");
+            NodeList consts = enumElement.getElementsByTagName("const");
+            
+            for (int j = 0; j < consts.getLength(); j++ ) {
+
+                Element constElement = (Element) consts.item(j);
+                String constName = constElement.getAttribute("name");
+
+                enumContent.append("        ")
+                           .append(constName);
+                if (j < consts.getLength()-1) {
+                    enumContent.append(",");
+                }
+                else {
+                    enumContent.append(";");
+                }
+                enumContent.append("\n");
+            }
+            enumContent.append("    }\n");  
+        
+        } // end of each enums
+        enumContent.append("}\n");
+
+        // write it to the file
+        try(FileWriter writer = new FileWriter("generated/CommonTypes.java")) {
+            writer.write(enumContent.toString());
+        }
+    } // generateEnumClasses
+
+
+    public static void main(String[] args) {
+        try {
     
-    }
+            XMLParser parser = new XMLParser();
+            Document document = parser.parseXmlFile("TestInfogramDefinition.xml");
+    
+            parser.generateRecordClass(document);
+            parser.generateMainModelClass(document);
+            parser.generateEnumClasses(document);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
-
+    } // main
 } //XMLParser
+
+
+
