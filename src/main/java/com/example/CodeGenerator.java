@@ -61,7 +61,7 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) {
-        XMLParser.parseXML("src/main/resources/example.xml");
+        XMLParser.parseXML("src/main/resources/TestInfogramDefinition.xml");
         generateClasses(XMLParser.dataTypes, XMLParser.enumTypes);
     }
 }
