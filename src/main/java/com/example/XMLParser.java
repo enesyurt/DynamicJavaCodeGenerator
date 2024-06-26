@@ -29,11 +29,13 @@ public class XMLParser {
         NodeList typedefs = document.getElementsByTagName("typedef");
         for (int i = 0; i < typedefs.getLength(); i++) {
             Element typedef = (Element) typedefs.item(i);
-            String typeName = typedef.getAttribute("name");
-            Element typeElement = (Element) typedef.getFirstChild();
-            String typeValue = typeElement.getTagName();
-            
+            // String xname = typedef.getFirstChild().getNextSibling().getNodeName();
+            // System.out.println(xname + " xname");
+            String typeName = typedef.getAttribute("name"); 
+
+            String typeValue = typedef.getFirstChild().getNextSibling().getNodeName();
             typeDefinitions.put(typeName, typeValue);
+            System.out.println("Merhaba"+i);
         }
     }
 
@@ -49,16 +51,7 @@ public class XMLParser {
         if (typeDefinitions.containsKey(xmlType)) {
             return typeDefinitions.get(xmlType);
         }
-        switch (xmlType) {
-            case "long":
-                return "long";
-            case "short":
-                return "short";
-            case "double":
-                return "double";
-            default:
-                return "String";
-        }
+        return xmlType;
     }
 
     private String capitalize(String str) {
@@ -88,6 +81,7 @@ public class XMLParser {
                         .append("import test.LogHelper;\n\n")
                         .append("public class ")
                         .append(recordName)
+                        .append("Model")
                         .append(" {\n\n");
 
             NodeList fields = recordElement.getElementsByTagName("field");
@@ -108,6 +102,7 @@ public class XMLParser {
                 String fieldName = fieldElement.getAttribute("name");
                 String fieldType = fieldElement.getAttribute("type");
                 
+                // Getter fonksiyonlar
                 classContent.append("    public ")
                             .append(convertType(fieldType))
                             .append(" get")
@@ -119,6 +114,7 @@ public class XMLParser {
                             .append("    }\n");
                 System.out.println(fieldType);
 
+                // Setter fonksiyonlar
                 classContent.append("    public void set")
                             .append(capitalize(fieldName))
                             .append("(")
@@ -135,7 +131,7 @@ public class XMLParser {
             }
             classContent.append("}\n");
 
-            try (FileWriter writer = new FileWriter("generated/" + recordName + ".java")) {
+            try (FileWriter writer = new FileWriter("generated/" + recordName + "Model.java")) {
                 writer.write(classContent.toString());
             }
         }
@@ -242,7 +238,7 @@ public class XMLParser {
     public static void main(String[] args) {
         try {
             XMLParser parser = new XMLParser();
-            Document document = parser.parseXmlFile("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main/resources/TestInfogramDefinition.xml");
+            Document document = parser.parseXmlFile("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main/resources/TestInfogramDefinition2.xml");
             parser.generateRecordClass(document);
             parser.generateMainModelClass(document);
             parser.generateEnumClasses(document);
