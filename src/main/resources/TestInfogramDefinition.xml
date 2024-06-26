@@ -49,7 +49,7 @@
         <field name="Enum1" type="TestInfogramEnum1Type" />
         <field name="Enum2" type="TestInfogramEnum2Type" />
         <field name="Percentage" type="PercentageType" />
-        <field name="PointList" type="TestInfogramPointListType" />
+        <field name="PointList" type="TestInfogramItemListType" />
         <field name="PointListSize" type="TestInfogramPointListSizeType" />
     </definition>
 

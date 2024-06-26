@@ -36,13 +36,6 @@
         <const name="PORT" />
         <const name="STBD" />
     </enumeration>
-    <record name="GeoPositionType" >
-        <field name="Latitude" type="LatitudeType" />
-        <field name="Longitude" type="LongitudeType" />
-        <field name="AltitudeDepth" type="AltitudeDepthType" />
-        <field name="EnumValue" type="TestInfogramEnum1Type" />
-        
-    </record>
     <array name="TestInfogramItemListType" type="GeoPoisitionType" length="10" />
     <definition>
         <field name="Id" type="TestInfogramIdType" />
