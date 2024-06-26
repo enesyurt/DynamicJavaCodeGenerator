@@ -1,0 +1,61 @@
+<?ml version="1.0" standalone="no"?>
+<infogram name="TestInfogramDefinition2">
+    <typedef name="TestInfogramIdType" min="0" max="2147483647" unit="" >
+        <long/>
+    </typedef>
+    <typedef name="PercentageType" min="0.0" max="100.0" unit="" >
+        <double/>
+    </typedef>
+    <typedef  min="0.0" max="360.0" unit="degree" name="AngleType" >
+        <double/>
+    </typedef>
+    <typedef name="LatitudeType" min="-90.0" max="90.0" unit="degree" >
+        <double/>
+    </typedef>
+    <typedef name="LongitudeType" min="-180.0" max="180.0" unit="degree" >
+        <double/>
+    </typedef>
+    <typedef name="AltitudeDepthType" min="-100000.0" max="100000.0" unit="meter" >
+        <double/>
+    </typedef>
+    <typedef name="TestInfogramItemIdType" min="0" max="10" unit="" >
+        <short/>
+    </typedef>
+    <typedef name="TestInfogramPointListSizeType" min="0" max="10" unit="" >
+        <short/>
+    </typedef>
+    <string name="TestInfogramItemNameType" length="32" />
+    <enumeration name="TestInfogramEnum1Type" >
+        <const name="NO_STATEMENT" />
+        <const name="NOT_AVAILABLE" />
+        <const name="PENDING" />
+        <const name="AVAILABLE" />
+    </enumeration>
+    <enumeration name="TestInfogramEnum2Type" >
+        <const name="NO_STATEMENT" />
+        <const name="PORT" />
+        <const name="STBD" />
+    </enumeration>
+    <record name="GeoPositionType" >
+        <field name="Latitude" type="LatitudeType" />
+        <field name="Longitude" type="LongitudeType" />
+        <field name="AltitudeDepth" type="AltitudeDepthType" />
+        <field name="EnumValue" type="TestInfogramEnum1Type" />
+        
+    </record>
+    <array name="TestInfogramItemListType" type="GeoPoisitionType" length="10" />
+    <definition>
+        <field name="Id" type="TestInfogramIdType" />
+        <field name="ItemId" type="TestInfogramItemIdType" />
+        <field name="ItemName" type="TestInfogramItemNameType" />
+        <field name="Enum1" type="TestInfogramEnum1Type" />
+        <field name="Enum2" type="TestInfogramEnum2Type" />
+        <field name="Percentage" type="PercentageType" />
+        <field name="PointList" type="TestInfogramPointListType" />
+        <field name="PointListSize" type="TestInfogramPointListSizeType" />
+    </definition>
+
+    <keys>Id ItemId</keys>
+</infogram>
+
+
