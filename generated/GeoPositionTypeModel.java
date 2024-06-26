@@ -4,10 +4,9 @@ import test.LogHelper;
 
 public class GeoPositionTypeModel {
 
-    private double Latitude;
-    private double Longitude;
-    private double AltitudeDepth;
-    private TestInfogramEnum1Type EnumValue;
+    private double latitude;
+    private double longitude;
+    private double altitudeDepth;
 
     // Getters and Setters
     public double getLatitude() {
@@ -27,11 +26,5 @@ public class GeoPositionTypeModel {
     }
     public void setAltitudeDepth(double AltitudeDepth) {
         this.AltitudeDepth = AltitudeDepth;
-    }
-    public TestInfogramEnum1Type getEnumValue() {
-        return EnumValue;
-    }
-    public void setEnumValue(TestInfogramEnum1Type EnumValue) {
-        this.EnumValue = EnumValue;
     }
 }

@@ -3,14 +3,14 @@ import java.util.ArrayList;
 
 public class TestInfogramDefinitionModel {
 
-    private long Id;
-    private short ItemId;
-    private TestInfogramItemNameType ItemName;
-    private TestInfogramEnum1Type Enum1;
-    private TestInfogramEnum2Type Enum2;
-    private double Percentage;
-    private TestInfogramPointListType PointList;
-    private short PointListSize;
+    private long id;
+    private short itemId;
+    private TestInfogramItemNameType itemName;
+    private TestInfogramEnum1Type enum1;
+    private TestInfogramEnum2Type enum2;
+    private double percentage;
+    private ArrayList<GeoPoisitionType> pointList;
+    private short pointListSize;
 
      // Getters and Setters 
     public long getId() {
@@ -49,10 +49,10 @@ public class TestInfogramDefinitionModel {
     public void setPercentage(double Percentage) {
         this.Percentage = Percentage;
     }
-    public TestInfogramPointListType getPointList() {
+    public ArrayList<GeoPoisitionType> getPointList() {
         return PointList;
     }
-    public void setPointList(TestInfogramPointListType PointList) {
+    public void setPointList(ArrayList<GeoPoisitionType> PointList) {
         this.PointList = PointList;
     }
     public short getPointListSize() {
