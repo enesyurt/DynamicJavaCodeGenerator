@@ -31,8 +31,6 @@ public class XMLParser {
         NodeList typedefs = document.getElementsByTagName("typedef");
         for (int i = 0; i < typedefs.getLength(); i++) {
             Element typedef = (Element) typedefs.item(i);
-            // String xname = typedef.getFirstChild().getNextSibling().getNodeName();
-            // System.out.println(xname + " xname");
             String typeName = typedef.getAttribute("name"); 
             String typeValue = typedef.getFirstChild().getNextSibling().getNodeName();
             typeDefinitions.put(typeName, typeValue);
@@ -47,6 +45,7 @@ public class XMLParser {
             String arrayName = arrayElement.getAttribute("name");
             String arrayType = arrayElement.getAttribute("type");
             dataTypes.put(arrayName, arrayType);
+            System.out.println(i+" arrayName: "+ arrayName +" arrayType: " +arrayType);
         }
     }
     
@@ -177,7 +176,7 @@ public class XMLParser {
                         .append(" ")
                         .append(uncapitalize(fieldName))
                         .append(";\n");
-            System.out.println(i+" Name:  "+fieldName+"             Type:  "+fieldType);
+            //System.out.println(i+" Name:  "+fieldName+"             Type:  "+fieldType);
         }
         
 
