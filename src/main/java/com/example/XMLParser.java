@@ -14,6 +14,7 @@ import java.util.Map;
 public class XMLParser {
 
     private Map<String, String> typeDefinitions;
+    private Map<String, String> dataTypes;
 
     public Document parseXmlFile(String filePath) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -21,6 +22,7 @@ public class XMLParser {
         Document document = builder.parse((filePath));
         document.getDocumentElement().normalize();
         loadTypeDefinitions(document);
+        loadDataTypes(document);
         return document;
     }
     
@@ -32,17 +34,22 @@ public class XMLParser {
             // String xname = typedef.getFirstChild().getNextSibling().getNodeName();
             // System.out.println(xname + " xname");
             String typeName = typedef.getAttribute("name"); 
-
             String typeValue = typedef.getFirstChild().getNextSibling().getNodeName();
             typeDefinitions.put(typeName, typeValue);
-            System.out.println("Merhaba"+i);
         }
     }
-
-    public Element getRootElement(Document document) {
-        return document.getDocumentElement();
+    // Function will be improved for other data types e.g. String.
+    private void loadDataTypes (Document document) {
+        dataTypes = new HashMap<>();
+        NodeList arrays = getElementsByTagName(document, "array");
+        for(int i = 0; i < arrays.getLength(); i++) {
+            Element arrayElement = (Element) arrays.item(i);
+            String arrayName = arrayElement.getAttribute("name");
+            String arrayType = arrayElement.getAttribute("type");
+            dataTypes.put(arrayName, arrayType);
+        }
     }
-
+    
     public NodeList getElementsByTagName(Document document, String tagName) {
         return document.getElementsByTagName(tagName);
     }
@@ -50,6 +57,10 @@ public class XMLParser {
     private String convertType (String xmlType) {
         if (typeDefinitions.containsKey(xmlType)) {
             return typeDefinitions.get(xmlType);
+        }
+        else if(dataTypes.containsKey(xmlType)){
+            String arrayDef = "ArrayList<" + dataTypes.get(xmlType) + ">";
+            return arrayDef;
         }
         return xmlType;
     }
@@ -59,6 +70,13 @@ public class XMLParser {
             return str;
         }
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    private String uncapitalize(String str) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
     private void ensureGeneratedFolderExists() {
@@ -92,7 +110,7 @@ public class XMLParser {
                 classContent.append("    private ")
                             .append(convertType(fieldType))
                             .append(" ")
-                            .append(fieldName)
+                            .append(uncapitalize(fieldName))
                             .append(";\n");
             }
             
@@ -112,7 +130,6 @@ public class XMLParser {
                             .append(fieldName)
                             .append(";\n")
                             .append("    }\n");
-                System.out.println(fieldType);
 
                 // Setter fonksiyonlar
                 classContent.append("    public void set")
@@ -154,12 +171,17 @@ public class XMLParser {
             Element fieldElement = (Element) fields.item(i);
             String fieldName = fieldElement.getAttribute("name");
             String fieldType = fieldElement.getAttribute("type");
+
             classContent.append("    private ")
                         .append(convertType(fieldType))
                         .append(" ")
-                        .append(fieldName)
+                        .append(uncapitalize(fieldName))
                         .append(";\n");
+            System.out.println(i+" Name:  "+fieldName+"             Type:  "+fieldType);
         }
+        
+
+
         classContent.append("\n     // Getters and Setters \n");
         for (int i = 0; i < fields.getLength(); i++) {
             Element fieldElement = (Element) fields.item(i);
@@ -238,7 +260,7 @@ public class XMLParser {
     public static void main(String[] args) {
         try {
             XMLParser parser = new XMLParser();
-            Document document = parser.parseXmlFile("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main/resources/TestInfogramDefinition2.xml");
+            Document document = parser.parseXmlFile("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main/resources/TestInfogramDefinition.xml");
             parser.generateRecordClass(document);
             parser.generateMainModelClass(document);
             parser.generateEnumClasses(document);
