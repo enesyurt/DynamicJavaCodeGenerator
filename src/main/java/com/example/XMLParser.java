@@ -8,13 +8,16 @@ import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class XMLParser {
 
     private Map<String, String> typeDefinitions;
-    private Map<String, String> dataTypes;
+    private Map<String, String> arrayTypes;
+    private List<String> stringTypes;
 
     public Document parseXmlFile(String filePath) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -22,7 +25,8 @@ public class XMLParser {
         Document document = builder.parse((filePath));
         document.getDocumentElement().normalize();
         loadTypeDefinitions(document);
-        loadDataTypes(document);
+        loadArrayTypes(document);
+        loadStringTypes(document);
         return document;
     }
     
@@ -36,16 +40,27 @@ public class XMLParser {
             typeDefinitions.put(typeName, typeValue);
         }
     }
-    // Function will be improved for other data types e.g. String.
-    private void loadDataTypes (Document document) {
-        dataTypes = new HashMap<>();
+    
+    private void loadArrayTypes (Document document) {
+        arrayTypes = new HashMap<>();
         NodeList arrays = getElementsByTagName(document, "array");
         for(int i = 0; i < arrays.getLength(); i++) {
             Element arrayElement = (Element) arrays.item(i);
             String arrayName = arrayElement.getAttribute("name");
             String arrayType = arrayElement.getAttribute("type");
-            dataTypes.put(arrayName, arrayType);
-            System.out.println(i+" arrayName: "+ arrayName +" arrayType: " +arrayType);
+            arrayTypes.put(arrayName, arrayType);
+           // System.out.println(i+" arrayName: "+ arrayName +" arrayType: " +arrayType);
+        }
+    }
+
+    private void loadStringTypes (Document document) {
+        stringTypes = new ArrayList<>();
+        NodeList strings = getElementsByTagName(document, "string");
+        for (int i = 0; i < strings.getLength(); i++) {
+            Element stringElement = (Element) strings.item(i);
+            String stringName = stringElement.getAttribute("name");
+            stringTypes.add(stringName);
+            System.out.println(i + " StringTypes List: " + stringTypes);
         }
     }
     
@@ -57,9 +72,12 @@ public class XMLParser {
         if (typeDefinitions.containsKey(xmlType)) {
             return typeDefinitions.get(xmlType);
         }
-        else if(dataTypes.containsKey(xmlType)){
-            String arrayDef = "ArrayList<" + dataTypes.get(xmlType) + ">";
+        else if(arrayTypes.containsKey(xmlType)){
+            String arrayDef = "ArrayList<" + arrayTypes.get(xmlType) + ">";
             return arrayDef;
+        }
+        else if(stringTypes.contains(xmlType)){
+            return "String";
         }
         return xmlType;
     }
@@ -259,7 +277,7 @@ public class XMLParser {
     public static void main(String[] args) {
         try {
             XMLParser parser = new XMLParser();
-            Document document = parser.parseXmlFile("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main/resources/TestInfogramDefinition.xml");
+            Document document = parser.parseXmlFile("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main/resources/TestInfogramDefinition2.xml");
             parser.generateRecordClass(document);
             parser.generateMainModelClass(document);
             parser.generateEnumClasses(document);

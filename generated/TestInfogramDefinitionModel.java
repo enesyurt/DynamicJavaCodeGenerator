@@ -5,7 +5,7 @@ public class TestInfogramDefinitionModel {
 
     private long id;
     private short itemId;
-    private TestInfogramItemNameType itemName;
+    private String itemName;
     private TestInfogramEnum1Type enum1;
     private TestInfogramEnum2Type enum2;
     private double percentage;
@@ -25,10 +25,10 @@ public class TestInfogramDefinitionModel {
     public void setItemId(short ItemId) {
         this.ItemId = ItemId;
     }
-    public TestInfogramItemNameType getItemName() {
+    public String getItemName() {
         return ItemName;
     }
-    public void setItemName(TestInfogramItemNameType ItemName) {
+    public void setItemName(String ItemName) {
         this.ItemName = ItemName;
     }
     public TestInfogramEnum1Type getEnum1() {
