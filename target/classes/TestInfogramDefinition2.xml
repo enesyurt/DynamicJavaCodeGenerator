@@ -36,7 +36,13 @@
         <const name="PORT" />
         <const name="STBD" />
     </enumeration>
+    <record name="GeoPositionType" >
+        <field name="Latitude" type="LatitudeType" />
+        <field name="Longitude" type="LongitudeType" />
+        <field name="AltitudeDepth" type="AltitudeDepthType" />
+    </record>
     <array name="TestInfogramItemListType" type="GeoPoisitionType" length="10" />
+    <array name="DummyThingType" type="DummyDummyDummy" />
     <definition>
         <field name="Id" type="TestInfogramIdType" />
         <field name="ItemId" type="TestInfogramItemIdType" />
@@ -44,8 +50,9 @@
         <field name="Enum1" type="TestInfogramEnum1Type" />
         <field name="Enum2" type="TestInfogramEnum2Type" />
         <field name="Percentage" type="PercentageType" />
-        <field name="PointList" type="TestInfogramPointListType" />
+        <field name="PointList" type="TestInfogramItemListType" />
         <field name="PointListSize" type="TestInfogramPointListSizeType" />
+        <field name="DummyThingName" type="DummyThingType" />
     </definition>
 
     <keys>Id ItemId</keys>
