@@ -1,1 +1,4 @@
-com/example/XMLParser.class
+com/example/ModelGenerator.class
+com/example/Main.class
+com/example/TypeLoader.class
+com/example/Parser.class

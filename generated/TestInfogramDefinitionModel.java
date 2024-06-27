@@ -12,7 +12,7 @@ public class TestInfogramDefinitionModel {
     private ArrayList<GeoPoisitionType> pointList;
     private short pointListSize;
 
-     // Getters and Setters 
+    // Getters and Setters
     public long getId() {
         return Id;
     }

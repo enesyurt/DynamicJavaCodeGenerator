@@ -13,7 +13,7 @@ public class TestInfogramDefinitionModel {
     private short pointListSize;
     private ArrayList<DummyDummyDummy> dummyThingName;
 
-     // Getters and Setters 
+    // Getters and Setters
     public long getId() {
         return Id;
     }
