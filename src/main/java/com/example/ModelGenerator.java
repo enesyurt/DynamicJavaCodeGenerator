@@ -11,9 +11,11 @@ import java.io.IOException;
 public class ModelGenerator {
 
     private TypeLoader typeLoader;
+    private String outputDirectory;
 
-    public ModelGenerator(TypeLoader typeLoader) {
+    public ModelGenerator(TypeLoader typeLoader, String outputDirectory) {
         this.typeLoader = typeLoader;
+        this.outputDirectory = outputDirectory;
     }
 
     private String convertType(String xmlType) {
@@ -43,7 +45,7 @@ public class ModelGenerator {
     }
 
     private void ensureGeneratedFolderExists() {
-        File folder = new File("generated");
+        File folder = new File(outputDirectory);
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -111,7 +113,7 @@ public class ModelGenerator {
             }
             classContent.append("}\n");
 
-            try (FileWriter writer = new FileWriter("generated/" + recordName + "Model.java")) {
+            try (FileWriter writer = new FileWriter(outputDirectory + "/" + recordName + "Model.java")) {
                 writer.write(classContent.toString());
             }
         }
@@ -174,31 +176,31 @@ public class ModelGenerator {
         }
         classContent.append("}\n");
 
-        try (FileWriter writer = new FileWriter("generated/" + infogramName + "Model.java")) {
+        try (FileWriter writer = new FileWriter(outputDirectory + "/" + infogramName + "Model.java")) {
             writer.write(classContent.toString());
         }
     }
-    
+
     public void generateEnumClasses(Document document) throws IOException {
         ensureGeneratedFolderExists();
         NodeList enumerations = document.getElementsByTagName("enumeration");
-    
+
         StringBuilder enumContent = new StringBuilder();
         enumContent.append("package test.model.common.datatype;\n")
                    .append("public class CommonTypes {\n\n");
         for (int i = 0; i < enumerations.getLength(); i++) {
             Element enumElement = (Element) enumerations.item(i);
             String enumName = enumElement.getAttribute("name");
-    
+
             enumContent.append("    public enum ")
                        .append(enumName)
                        .append(" {\n\n");
             NodeList consts = enumElement.getElementsByTagName("const");
-    
+
             for (int j = 0; j < consts.getLength(); j++) {
                 Element constElement = (Element) consts.item(j);
                 String constName = constElement.getAttribute("name");
-    
+
                 enumContent.append("        ")
                            .append(constName);
                 if (j < consts.getLength() - 1) {
@@ -211,8 +213,8 @@ public class ModelGenerator {
             enumContent.append("    }\n");  
         }
         enumContent.append("}\n");
-    
-        try (FileWriter writer = new FileWriter("generated/CommonTypes.java")) {
+
+        try (FileWriter writer = new FileWriter(outputDirectory + "/CommonTypes.java")) {
             writer.write(enumContent.toString());
         }
     }
