@@ -26,7 +26,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <mainClass>com.example.Main</mainClass>
+                    <mainClass>com.gui.MainGUI</mainClass>
                 </configuration>
             </plugin>
         </plugins>
