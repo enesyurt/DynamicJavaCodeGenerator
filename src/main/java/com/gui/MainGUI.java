@@ -1,35 +1,55 @@
 package com.gui;
 
-import com.example.*;
+import com.example.ModelGenerator;
+import com.example.Parser;
+import com.example.TypeLoader;
+import org.w3c.dom.Document;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import org.w3c.dom.Document;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainGUI extends JFrame {
 
     private JTextField xmlFilePathField;
     private JTextField outputFolderPathField;
+    private List<File> xmlFiles;
 
     public MainGUI() {
         super("XML to Java Class Generator");
 
-        // Set up components
+        xmlFiles = new ArrayList<>();
+
         xmlFilePathField = new JTextField(30);
         outputFolderPathField = new JTextField(30);
 
-        JButton selectXmlFileButton = new JButton("Select XML File");
+        JButton selectXmlFileButton = new JButton("Select XML Files or Folder");
         selectXmlFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                fileChooser.setMultiSelectionEnabled(true);
                 int result = fileChooser.showOpenDialog(MainGUI.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    xmlFilePathField.setText(selectedFile.getAbsolutePath());
+                    File[] selectedFiles = fileChooser.getSelectedFiles();
+                    for (File file : selectedFiles) {
+                        if (file.isDirectory()) {
+                            File[] filesInDirectory = file.listFiles((dir, name) -> name.endsWith(".xml"));
+                            if (filesInDirectory != null) {
+                                for (File xmlFile : filesInDirectory) {
+                                    xmlFiles.add(xmlFile);
+                                }
+                            }
+                        } else if (file.isFile() && file.getName().endsWith(".xml")) {
+                            xmlFiles.add(file);
+                        }
+                    }
+                    updateXmlFilePathField();
                 }
             }
         });
@@ -52,21 +72,25 @@ public class MainGUI extends JFrame {
         generateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String xmlFilePath = xmlFilePathField.getText();
                 String outputFolderPath = outputFolderPathField.getText();
 
                 try {
+                    List<Document> documents = new ArrayList<>();
                     Parser parser = new Parser();
-                    Document document = parser.parseXmlFile(xmlFilePath);
+                    for (File xmlFile : xmlFiles) {
+                        Document document = parser.parseXmlFile(xmlFile.getAbsolutePath());
+                        documents.add(document);
+                    }
 
-                    TypeLoader typeLoader = new TypeLoader(document);
-                    ModelGenerator modelGenerator = new ModelGenerator(typeLoader, outputFolderPath);
+                    if (!documents.isEmpty()) {
+                        TypeLoader typeLoader = new TypeLoader(documents.get(0)); // Assuming all documents share the same type definitions
+                        ModelGenerator modelGenerator = new ModelGenerator(typeLoader, outputFolderPath);
+                        modelGenerator.generateClassesFromDocuments(documents.toArray(new Document[0]));
 
-                    modelGenerator.generateRecordClass(document);
-                    modelGenerator.generateMainModelClass(document);
-                    modelGenerator.generateEnumClasses(document);
-
-                    JOptionPane.showMessageDialog(MainGUI.this, "Java classes generated successfully!");
+                        JOptionPane.showMessageDialog(MainGUI.this, "Java classes generated successfully!");
+                    } else {
+                        JOptionPane.showMessageDialog(MainGUI.this, "No valid XML files selected.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(MainGUI.this, "Error generating Java classes: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -79,14 +103,10 @@ public class MainGUI extends JFrame {
         mainPanel.setLayout(new GridLayout(4, 2, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        //mainPanel.add(new JLabel("Select XML File:"));
         mainPanel.add(xmlFilePathField);
         mainPanel.add(selectXmlFileButton);
-
-        //mainPanel.add(new JLabel("Select Output Folder:"));
         mainPanel.add(outputFolderPathField);
         mainPanel.add(selectOutputFolderButton);
-
         mainPanel.add(generateButton);
 
         // Frame setup
@@ -95,6 +115,14 @@ public class MainGUI extends JFrame {
         pack();
         setLocationRelativeTo(null); // Center the window
         setVisible(true);
+    }
+
+    private void updateXmlFilePathField() {
+        StringBuilder paths = new StringBuilder();
+        for (File file : xmlFiles) {
+            paths.append(file.getAbsolutePath()).append(";");
+        }
+        xmlFilePathField.setText(paths.toString());
     }
 
     public static void main(String[] args) {
