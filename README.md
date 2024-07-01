@@ -4,57 +4,42 @@ This is one of the tasks given during my internship at HAVELSAN.
 
 ## Overview
 
-This project is a Java-based tool that generates Java class and enum files from an XML input file. The purpose of this project is to automate the creation of Java classes and enums based on predefined structures defined in an XML file.
+This project is a Java application that generates Java classes from XML files. It provides a graphical user interface (GUI) for users to select XML files or folders containing XML files and specify an output folder where the generated Java classes will be saved.
 
 ## Features
 
-- **Dynamic Class Generation**: Automatically generates Java classes based on `dataType` elements defined in the XML file.
-- **Enum Generation**: Automatically generates Java enums based on `enumType` elements defined in the XML file.
-- **XML Parsing**: Utilizes Java DOM parser to read and parse the XML file.
-- **File Writing**: Writes the generated Java class and enum files to a specified directory.
+- **Select Multiple Input Files**: Select multiple XML files or a folder containing XML files.
+- **XML Parsing**: Parse the selected XML files to generate Java classes.
+- **Specify Output Folder**: Specify an output folder for the generated Java classes.
+- **Graphical User Interface**: Simple and intuitive graphical user interface built with Swing.
 
 ## Project Structure
 ```plainText
 DynamicJavaCodeGenerator/
 ├── generated/
-│   └── [Generated Java Files]             # This folder will contain the generated Java files (e.g., id.java, Name.java, Status.java)
+│   └── [Generated Java Files]                # This folder will contain the generated Java files 
 ├── src/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── com/
-│   │   │       └── example/
-│   │   │           ├── CodeGenerator.java # Main class responsible for generating Java classes and enums from XML
-│   │   │           ├── DataType.java      # DataType class representing a data type parsed from XML
-│   │   │           ├── EnumType.java      # EnumType class representing an enum type parsed from XML
-│   │   │           └── XMLParser.java     # XMLParser class responsible for parsing the XML file
+│   │   │       ├──  example/
+│   │   │       │    ├── ModelGenerator.java  # Handles the generation of Java classes from XML documents.
+│   │   │       │    ├── Parser.java          # Parses XML files into Document objects.
+│   │   │       │    ├── TypeLoader.java      # Loads type information from XML documents.
+│   │   │       │
+│   │   │       └──  gui/
+│   │   │            └── MainGUI.java         # Provides the graphical user interface for the application.
 │   │   └── resources/
-│   │       └── example.xml                # Example XML file containing the structure of data types and enum types
-├── pom.xml                                # Maven configuration file
-└── README.md                              # Project documentation (this file)
+│   │       └── TestInfogramDefinition.xml    # Example XML file containing the structure of data types and enum types
+├── pom.xml                                   # Maven configuration file
+└── README.md                                 # Project documentation (this file)
 
 ```
-## XML Structure
+## Dependencies
 
-The XML file (`example.xml`) should be structured as follows:
-
-```xml
-<root>
-    <dataType>
-        <name>id</name>
-        <type>int</type>
-    </dataType>
-    <dataType>
-        <name>name</name>
-        <type>String</type>
-    </dataType>
-    <enumType>
-        <name>Status</name>
-        <value>ACTIVE</value>
-        <value>INACTIVE</value>
-        <value>DELETED</value>
-    </enumType>
-</root>
-```
+The project uses the following dependencies:
+* ```bash javax.swing``` : For creating the graphical user interface.
+* ```org.w3c.dom``` : For handling XML documents.
 
 ## Usage
 
@@ -68,36 +53,18 @@ cd DynamicJavaCodeGenerator
 ```bash
 mvn clean install
 ```
-3. **Try with your data**: Place your XML file (e.g., `example.xml`) in the `src/main/resources` directory.
+3. **Try with the data**: Place your XML file (e.g., `TestInfogramDefinition.xml`) in the `src/main/resources` directory.
 4. **Run**: Run the following Maven command to execute the CodeGenerator:
 ```bash
-mvn exec:java -Dexec.mainClass="com.example.CodeGenerator"
+mvn exec:java -Dexec.mainClass="com.gui.MainGUI"
 ```
-5. **Check generated files**: The generated Java files will be located in the `generated/` directory.
+5. **Use the GUI**: The program will open you a GUI for you to select input and output folders.
 
-## Example
+6. **Select XML Files or Folder**: Click on the `Select XML Files or Folder` button to choose multiple XML files or a folder containing XML files. The paths of the selected files will be displayed in the text field.
 
-For the [XML Structure](#xml-structure) given the tool will generate:
-- id.java
-```java
-public class id {
-    private int id;
-}
-```
-- name.java
-```java
-public class name {
-    private String name;
-}
-```
-- Status.java
-```java
-public enum Status {
-    ACTIVE,
-    INACTIVE,
-    DELETED
-}
-```
+7. **Select Output Folder**: Click on the `Select Output Folder` button to specify the folder where the generated Java classes will be saved.
+
+8. **Generate Java Classes**: Click on the `Generate Java Classes` button to start the generation process. A message will be displayed upon successful generation or if an error occurs.
 
 ## Contributing
 If you would like to contribute to this project, please fork the repository and submit a pull request. Any improvements or bug fixes are welcomed.
