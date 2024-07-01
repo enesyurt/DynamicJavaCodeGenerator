@@ -11,11 +11,11 @@ import java.io.IOException;
 public class ModelGenerator {
 
     private TypeLoader typeLoader;
-    private String outputDirectory;
+    private String outputFolderPath;
 
-    public ModelGenerator(TypeLoader typeLoader, String outputDirectory) {
+    public ModelGenerator(TypeLoader typeLoader, String outputFolderPath) {
         this.typeLoader = typeLoader;
-        this.outputDirectory = outputDirectory;
+        this.outputFolderPath = outputFolderPath;
     }
 
     private String convertType(String xmlType) {
@@ -45,7 +45,7 @@ public class ModelGenerator {
     }
 
     private void ensureGeneratedFolderExists() {
-        File folder = new File(outputDirectory);
+        File folder = new File(outputFolderPath);
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -113,7 +113,7 @@ public class ModelGenerator {
             }
             classContent.append("}\n");
 
-            try (FileWriter writer = new FileWriter(outputDirectory + "/" + recordName + "Model.java")) {
+            try (FileWriter writer = new FileWriter(outputFolderPath + "/" + recordName + "Model.java")) {
                 writer.write(classContent.toString());
             }
         }
@@ -176,7 +176,7 @@ public class ModelGenerator {
         }
         classContent.append("}\n");
 
-        try (FileWriter writer = new FileWriter(outputDirectory + "/" + infogramName + "Model.java")) {
+        try (FileWriter writer = new FileWriter(outputFolderPath + "/" + infogramName + "Model.java")) {
             writer.write(classContent.toString());
         }
     }
@@ -214,8 +214,16 @@ public class ModelGenerator {
         }
         enumContent.append("}\n");
 
-        try (FileWriter writer = new FileWriter(outputDirectory + "/CommonTypes.java")) {
+        try (FileWriter writer = new FileWriter(outputFolderPath + "/CommonTypes.java")) {
             writer.write(enumContent.toString());
+        }
+    }
+
+    public void generateClassesFromDocuments(Document[] documents) throws IOException {
+        for (Document document : documents) {
+            generateRecordClass(document);
+            generateMainModelClass(document);
+            generateEnumClasses(document);
         }
     }
 }
