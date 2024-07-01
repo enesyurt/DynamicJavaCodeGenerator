@@ -25,23 +25,17 @@
         <short/>
     </typedef>
     <string name="TestInfogramItemNameType" length="32" />
-    <enumeration name="TestInfogramEnum1Type" >
-        <const name="NO_STATEMENT" />
-        <const name="NOT_AVAILABLE" />
-        <const name="PENDING" />
-        <const name="AVAILABLE" />
-    </enumeration>
     <enumeration name="TestInfogramEnum2Type" >
         <const name="NO_STATEMENT" />
         <const name="PORT" />
         <const name="STBD" />
     </enumeration>
-    <record name="GeoPositionType" >
+    <record name="GeoPositionType2" >
         <field name="Latitude" type="LatitudeType" />
         <field name="Longitude" type="LongitudeType" />
         <field name="AltitudeDepth" type="AltitudeDepthType" />
     </record>
-    <array name="TestInfogramItemListType" type="GeoPoisitionType" length="10" />
+    <array name="TestInfogramItemListType" type="GeoPoisitionType2" length="10" />
     <array name="DummyThingType" type="DummyDummyDummy" />
     <definition>
         <field name="Id" type="TestInfogramIdType" />

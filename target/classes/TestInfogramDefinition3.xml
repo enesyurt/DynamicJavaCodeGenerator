@@ -1,5 +1,5 @@
 <?ml version="1.0" standalone="no"?>
-<infogram name="TestInfogramDefinition2">
+<infogram name="TestInfogramDefinition3">
     <typedef name="TestInfogramIdType" min="0" max="2147483647" unit="" >
         <long/>
     </typedef>
@@ -36,11 +36,15 @@
         <const name="PORT" />
         <const name="STBD" />
     </enumeration>
+    <enumeration name="TestInfogramEnum3Type" >
+        <const name="NO_STATEMENT" />
+        <const name="PORT" />
+        <const name="STBD" />
+    </enumeration>
     <record name="GeoPositionType3" >
         <field name="Latitude" type="LatitudeType" />
         <field name="Longitude" type="LongitudeType" />
         <field name="AltitudeDepth" type="AltitudeDepthType" />
-        <field name="DummyGeoPositionField" type="DummyGeoPositionFieldType" />
     </record>
     <array name="TestInfogramItemListType" type="GeoPoisitionType3" length="10" />
     <array name="DummyThingType" type="DummyDummyDummy" />
