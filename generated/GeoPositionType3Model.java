@@ -7,7 +7,6 @@ public class GeoPositionType3Model {
     private double latitude;
     private double longitude;
     private double altitudeDepth;
-    private DummyGeoPositionFieldType dummyGeoPositionField;
 
     // Getters and Setters
     public double getLatitude() {
@@ -27,11 +26,5 @@ public class GeoPositionType3Model {
     }
     public void setAltitudeDepth(double AltitudeDepth) {
         this.AltitudeDepth = AltitudeDepth;
-    }
-    public DummyGeoPositionFieldType getDummyGeoPositionField() {
-        return DummyGeoPositionField;
-    }
-    public void setDummyGeoPositionField(DummyGeoPositionFieldType DummyGeoPositionField) {
-        this.DummyGeoPositionField = DummyGeoPositionField;
     }
 }
