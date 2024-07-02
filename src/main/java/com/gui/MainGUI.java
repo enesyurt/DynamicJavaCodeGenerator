@@ -83,7 +83,7 @@ public class MainGUI extends JFrame {
                     }
 
                     if (!documents.isEmpty()) {
-                        TypeLoader typeLoader = new TypeLoader(documents.get(0)); // Assuming all documents share the same type definitions
+                        TypeLoader typeLoader = new TypeLoader(documents.get(0)); 
                         ModelGenerator modelGenerator = new ModelGenerator(typeLoader, outputFolderPath);
                         modelGenerator.generateClassesFromDocuments(documents.toArray(new Document[0]));
 
@@ -98,7 +98,7 @@ public class MainGUI extends JFrame {
             }
         });
 
-        // Layout setup
+        // Arayüz çıktısı
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(4, 2, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -109,11 +109,11 @@ public class MainGUI extends JFrame {
         mainPanel.add(selectOutputFolderButton);
         mainPanel.add(generateButton);
 
-        // Frame setup
+        
         getContentPane().add(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null); // Pencereyi ortala
         setVisible(true);
     }
 
