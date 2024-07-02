@@ -53,6 +53,7 @@ public class TypeLoader {
         }
     }
 
+    // Getter fonksiyonlar
     public Map<String, String> getTypeDefinitions() {
         return typeDefinitions;
     }
