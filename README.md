@@ -56,6 +56,7 @@ mvn clean install
 3. **Try with the data**: Place your XML file (e.g., `TestInfogramDefinition.xml`) in the `src/main/resources` directory.
 4. **Run**: Run the following Maven command to execute the CodeGenerator:
 ```bash
+mvn clean compile
 mvn exec:java -Dexec.mainClass="com.gui.MainGUI"
 ```
 5. **Use the GUI**: The program will open you a GUI for you to select input and output folders.
