@@ -31,7 +31,7 @@ public class MainGUI extends JFrame {
         selectXmlFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser(new File("/Applications/HAVELSAN/DynamicJavaCodeGenerator/src/main"));
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 fileChooser.setMultiSelectionEnabled(true);
                 int result = fileChooser.showOpenDialog(MainGUI.this);
@@ -58,7 +58,7 @@ public class MainGUI extends JFrame {
         selectOutputFolderButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser folderChooser = new JFileChooser();
+                JFileChooser folderChooser = new JFileChooser(new File("/Applications/HAVELSAN/DynamicJavaCodeGenerator"));
                 folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 int result = folderChooser.showOpenDialog(MainGUI.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
