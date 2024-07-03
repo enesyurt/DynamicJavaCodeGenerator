@@ -46,6 +46,11 @@
         <field name="Longitude" type="LongitudeType" />
         <field name="AltitudeDepth" type="AltitudeDepthType" />
     </record>
+    <record name="GeoPositionType4" >
+        <field name="Latitude" type="LatitudeType" />
+        <field name="Longitude" type="LongitudeType" />
+        <field name="AltitudeDepth" type="AltitudeDepthType" />
+    </record>
     <array name="TestInfogramItemListType" type="GeoPoisitionType3" length="10" />
     <array name="DummyThingType" type="DummyDummyDummy" />
     <definition>
