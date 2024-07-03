@@ -4,9 +4,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.example.GeneratedCodeData.GeneratedCodeType;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ModelGenerator {
 
@@ -51,75 +54,96 @@ public class ModelGenerator {
         }
     }
 
-    public void generateRecordClass(Document document) throws IOException {
-        ensureGeneratedFolderExists();
+
+    public HashMap<String, GeneratedCodeData> generateRecordClasses(Document document, HashMap<String, GeneratedCodeData> dataHashMap) throws IOException {
         NodeList records = document.getElementsByTagName("record");
 
         for (int i = 0; i < records.getLength(); i++) {
             Element recordElement = (Element) records.item(i);
-            String recordName = recordElement.getAttribute("name");
-
-            StringBuilder classContent = new StringBuilder();
-            classContent.append("package test.model.common;\n\n")
-                        .append("import test.LogHelper;\n\n")
-                        .append("public class ")
-                        .append(recordName)
-                        .append("Model")
-                        .append(" {\n\n");
-
-            NodeList fields = recordElement.getElementsByTagName("field");
-            for (int j = 0; j < fields.getLength(); j++) {
-                Element fieldElement = (Element) fields.item(j);
-                String fieldName = fieldElement.getAttribute("name");
-                String fieldType = fieldElement.getAttribute("type");
-                classContent.append("    private ")
-                            .append(convertType(fieldType))
-                            .append(" ")
-                            .append(uncapitalize(fieldName))
-                            .append(";\n");
-            }
-
-            classContent.append("\n    // Getters and Setters\n");
-            for (int j = 0; j < fields.getLength(); j++) {
-                Element fieldElement = (Element) fields.item(j);
-                String fieldName = fieldElement.getAttribute("name");
-                String fieldType = fieldElement.getAttribute("type");
-
-                // Getter methods
-                classContent.append("    public ")
-                            .append(convertType(fieldType))
-                            .append(" get")
-                            .append(capitalize(fieldName))
-                            .append("() {\n")
-                            .append("        return ")
-                            .append(fieldName)
-                            .append(";\n")
-                            .append("    }\n");
-
-                // Setter methods
-                classContent.append("    public void set")
-                            .append(capitalize(fieldName))
-                            .append("(")
-                            .append(convertType(fieldType))
-                            .append(" ")
-                            .append(fieldName)
-                            .append(") {\n")
-                            .append("        this.")
-                            .append(fieldName)
-                            .append(" = ")
-                            .append(fieldName)
-                            .append(";\n")
-                            .append("    }\n");
-            }
-            classContent.append("}\n");
-
-            try (FileWriter writer = new FileWriter(outputFolderPath + "/" + recordName + "Model.java")) {
-                writer.write(classContent.toString());
-            }
+            GeneratedCodeData data = generateRecordClass(recordElement);
+            dataHashMap.put(data.fileName, data);
         }
+        return dataHashMap;
     }
 
-    public void generateMainModelClass(Document document) throws IOException {
+    public GeneratedCodeData generateRecordClass(Element recordElement) throws IOException {
+        GeneratedCodeData data = new GeneratedCodeData();
+        data.codeType = GeneratedCodeType.RecordType;
+        String recordName = recordElement.getAttribute("name");
+
+        StringBuilder recordContent = new StringBuilder();
+        recordContent.append("package test.model.common;\n\n")
+                     .append("import test.LogHelper;\n\n")
+                     .append("public class ")
+                     .append(recordName)
+                     .append("Model")
+                     .append(" {\n\n");
+
+        NodeList fields = recordElement.getElementsByTagName("field");
+        for (int j = 0; j < fields.getLength(); j++) {
+            Element fieldElement = (Element) fields.item(j);
+            String fieldName = fieldElement.getAttribute("name");
+            String fieldType = fieldElement.getAttribute("type");
+            recordContent.append("    private ")
+                         .append(convertType(fieldType))
+                         .append(" ")
+                         .append(uncapitalize(fieldName))
+                         .append(";\n");
+        }
+
+        recordContent.append("\n    // Getters and Setters\n");
+        for (int j = 0; j < fields.getLength(); j++) {
+            Element fieldElement = (Element) fields.item(j);
+            String fieldName = fieldElement.getAttribute("name");
+            String fieldType = fieldElement.getAttribute("type");
+
+            // Getter methods
+            recordContent.append("    public ")
+                         .append(convertType(fieldType))
+                         .append(" get")
+                         .append(capitalize(fieldName))
+                         .append("() {\n")
+                         .append("        return ")
+                         .append(fieldName)
+                         .append(";\n")
+                         .append("    }\n");
+
+            // Setter methods
+            recordContent.append("    public void set")
+                         .append(capitalize(fieldName))
+                         .append("(")
+                         .append(convertType(fieldType))
+                         .append(" ")
+                         .append(fieldName)
+                         .append(") {\n")
+                         .append("        this.")
+                         .append(fieldName)
+                         .append(" = ")
+                         .append(fieldName)
+                         .append(";\n")
+                         .append("    }\n");
+        }
+        recordContent.append("}\n");
+        data.fileName = recordName + "Model.java";
+        data.fileContent = recordContent;
+        return data;
+    }
+
+    public void buildRecordClasses(HashMap<String, GeneratedCodeData> dataHashMap) throws IOException{
+        ensureGeneratedFolderExists();
+        for (GeneratedCodeData item : dataHashMap.values()) {
+
+            try (FileWriter writer = new FileWriter(outputFolderPath + "/" + item.fileName)){         
+                writer.write(item.fileContent.toString());
+            }
+        }
+    } 
+
+
+    public HashMap <String, GeneratedCodeData> generateMainModelClass(Document document, HashMap <String, GeneratedCodeData> dataHashMap) throws IOException {
+        GeneratedCodeData data = new GeneratedCodeData();
+        data.codeType = GeneratedCodeType.MainModelType;
+
         ensureGeneratedFolderExists();
         Element infogram = (Element) document.getElementsByTagName("infogram").item(0);
         String infogramName = infogram.getAttribute("name");
@@ -175,55 +199,101 @@ public class ModelGenerator {
                         .append("    }\n");
         }
         classContent.append("}\n");
+        data.fileName = infogramName + "Model.java";
+        data.fileContent = classContent;
+        dataHashMap.put(data.fileName, data);
+        return dataHashMap;
+    }
 
-        try (FileWriter writer = new FileWriter(outputFolderPath + "/" + infogramName + "Model.java")) {
-            writer.write(classContent.toString());
+    public void buildMainModelClasses(HashMap <String, GeneratedCodeData> datHashMap) throws IOException {
+        ensureGeneratedFolderExists();
+        for (GeneratedCodeData item : datHashMap.values()) {
+
+            try (FileWriter writer = new FileWriter(outputFolderPath + "/" + item.fileName)){
+                writer.write(item.fileContent.toString());
+            }
         }
     }
 
-    public void generateEnumClasses(Document document) throws IOException {
-        ensureGeneratedFolderExists();
+
+    public HashMap<String, GeneratedCodeData> generateEnumClasses(Document document, HashMap<String, GeneratedCodeData> dataHashMap) throws IOException {
         NodeList enumerations = document.getElementsByTagName("enumeration");
 
-        StringBuilder enumContent = new StringBuilder();
-        enumContent.append("package test.model.common.datatype;\n")
-                   .append("public class CommonTypes {\n\n");
         for (int i = 0; i < enumerations.getLength(); i++) {
             Element enumElement = (Element) enumerations.item(i);
-            String enumName = enumElement.getAttribute("name");
-
-            enumContent.append("    public enum ")
-                       .append(enumName)
-                       .append(" {\n\n");
-            NodeList consts = enumElement.getElementsByTagName("const");
-
-            for (int j = 0; j < consts.getLength(); j++) {
-                Element constElement = (Element) consts.item(j);
-                String constName = constElement.getAttribute("name");
-
-                enumContent.append("        ")
-                           .append(constName);
-                if (j < consts.getLength() - 1) {
-                    enumContent.append(",");
-                } else {
-                    enumContent.append(";");
-                }
-                enumContent.append("\n");
-            }
-            enumContent.append("    }\n");  
+            GeneratedCodeData data = generateEnumClass(enumElement);
+            dataHashMap.put(data.fileName, data);  
         }
-        enumContent.append("}\n");
+        return dataHashMap;
+    }
+
+    public GeneratedCodeData generateEnumClass(Element enumElement) throws IOException {
+        GeneratedCodeData data = new GeneratedCodeData();
+        data.codeType = GeneratedCodeType.EnumType;
+    
+        String enumName = enumElement.getAttribute("name");
+        StringBuilder enumContent = new StringBuilder();
+        enumContent.append("    public enum ")
+                    .append(enumName)
+                    .append(" {\n\n");
+        NodeList consts = enumElement.getElementsByTagName("const");
+
+        for (int j = 0; j < consts.getLength(); j++) {
+            Element constElement = (Element) consts.item(j);
+            String constName = constElement.getAttribute("name");
+
+            enumContent.append("        ")
+                       .append(constName);
+
+            if (j < consts.getLength() - 1) {
+                enumContent.append(",");
+                enumContent.append("\n");
+            } 
+            else {
+                enumContent.append(";\n");
+                enumContent.append("    }");  
+            }
+        }
+
+        data.fileName = enumName;
+        data.fileContent = enumContent;
+        return data;
+    }
+
+    public void buildEnumClasses(HashMap<String, GeneratedCodeData> dataHashMap) throws IOException {
+        ensureGeneratedFolderExists();
+        StringBuilder commonContent = new StringBuilder();
+
+        commonContent.append("package test.model.common.datatype;\n\n")
+                     .append("public class CommonTypes {\n");
+
+        for (GeneratedCodeData item : dataHashMap.values()) {
+            commonContent.append("\n")
+                         .append(item.fileContent.toString())
+                         .append("\n");
+        }
+        
+        commonContent.append("}\n");
 
         try (FileWriter writer = new FileWriter(outputFolderPath + "/CommonTypes.java")) {
-            writer.write(enumContent.toString());
+            writer.write(commonContent.toString());
         }
     }
 
+
     public void generateClassesFromDocuments(Document[] documents) throws IOException {
+        HashMap<String, GeneratedCodeData> generatedCodeDataRecord = new HashMap<String, GeneratedCodeData>();
+        HashMap<String, GeneratedCodeData> generatedCodeDataMainModel = new HashMap<String, GeneratedCodeData>();
+        HashMap<String, GeneratedCodeData> generatedCodeDataEnum = new HashMap<String, GeneratedCodeData>();
+
         for (Document document : documents) {
-            generateRecordClass(document);
-            generateMainModelClass(document);
-            generateEnumClasses(document);
+            generateRecordClasses(document, generatedCodeDataRecord);
+            generateEnumClasses(document, generatedCodeDataEnum);
+            generateMainModelClass(document, generatedCodeDataMainModel);
         }
+
+        buildRecordClasses(generatedCodeDataRecord);
+        buildEnumClasses(generatedCodeDataEnum);
+        buildMainModelClasses(generatedCodeDataMainModel);
     }
 }
