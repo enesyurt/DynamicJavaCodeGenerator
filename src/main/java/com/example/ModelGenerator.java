@@ -260,28 +260,41 @@ public class ModelGenerator {
         return data;
     }
 
-    public void buildEnumClasses(HashMap<String, GeneratedCodeData> dataHashMap) throws IOException {
+    public void buildEnumClasses(HashMap<String, GeneratedCodeData> dataHashMap, boolean splitEnum) throws IOException {
         ensureGeneratedFolderExists();
-        StringBuilder commonContent = new StringBuilder();
-
-        commonContent.append("package test.model.common.datatype;\n\n")
-                     .append("public class CommonTypes {\n");
-
-        for (GeneratedCodeData item : dataHashMap.values()) {
-            commonContent.append("\n")
-                         .append(item.fileContent.toString())
-                         .append("\n");
-        }
         
-        commonContent.append("}\n");
+        if (!splitEnum) {
+            StringBuilder commonContent = new StringBuilder();
 
-        try (FileWriter writer = new FileWriter(outputFolderPath + "/CommonTypes.java")) {
-            writer.write(commonContent.toString());
+            commonContent.append("package test.model.common.datatype;\n\n")
+                         .append("public class CommonTypes {\n");
+    
+            for (GeneratedCodeData item : dataHashMap.values()) {
+                commonContent.append("\n")
+                             .append(item.fileContent.toString())
+                             .append("\n");
+            }
+            
+            commonContent.append("}\n");
+    
+            try (FileWriter writer = new FileWriter(outputFolderPath + "/CommonTypes.java")) {
+                writer.write(commonContent.toString());
+            }
+        } else {
+
+            for (GeneratedCodeData item : dataHashMap.values()) {
+                StringBuilder enumContent = new StringBuilder();
+                enumContent.append("package test.model.common.datatype;\n\n")
+                           .append(item.fileContent);
+                try (FileWriter writer = new FileWriter(outputFolderPath + "/" + item.fileName + ".java")) {
+                    writer.write(enumContent.toString());
+                }
+            }
         }
-    }
+    }    
 
 
-    public void generateClassesFromDocuments(Document[] documents) throws IOException {
+    public void generateClassesFromDocuments(Document[] documents, boolean splitEnum) throws IOException {
         HashMap<String, GeneratedCodeData> generatedCodeDataRecord = new HashMap<String, GeneratedCodeData>();
         HashMap<String, GeneratedCodeData> generatedCodeDataMainModel = new HashMap<String, GeneratedCodeData>();
         HashMap<String, GeneratedCodeData> generatedCodeDataEnum = new HashMap<String, GeneratedCodeData>();
@@ -293,7 +306,7 @@ public class ModelGenerator {
         }
 
         buildRecordClasses(generatedCodeDataRecord);
-        buildEnumClasses(generatedCodeDataEnum);
+        buildEnumClasses(generatedCodeDataEnum, splitEnum);
         buildMainModelClasses(generatedCodeDataMainModel);
     }
 }
