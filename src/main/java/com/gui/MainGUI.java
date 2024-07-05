@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class MainGUI extends JFrame {
     private JTextField xmlFilePathField;
     private JTextField outputFolderPathField;
     private List<File> xmlFiles;
+    private boolean splitEnum;
 
     public MainGUI() {
         super("XML to Java Class Generator");
@@ -68,6 +71,19 @@ public class MainGUI extends JFrame {
             }
         });
 
+
+        JCheckBox splitCheckBox = new JCheckBox("Split");
+        splitCheckBox.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e){
+                if(e.getStateChange()==1){
+                    splitEnum = true;
+                } else {
+                    splitEnum = false;
+                }
+            }
+        });
+
+
         JButton generateButton = new JButton("Generate Java Classes");
         generateButton.addActionListener(new ActionListener() {
             @Override
@@ -85,7 +101,7 @@ public class MainGUI extends JFrame {
                     if (!documents.isEmpty()) {
                         TypeLoader typeLoader = new TypeLoader(documents.get(0)); 
                         ModelGenerator modelGenerator = new ModelGenerator(typeLoader, outputFolderPath);
-                        modelGenerator.generateClassesFromDocuments(documents.toArray(new Document[0]));
+                        modelGenerator.generateClassesFromDocuments(documents.toArray(new Document[0]), splitEnum);
 
                         JOptionPane.showMessageDialog(MainGUI.this, "Java classes generated successfully!");
                     } else {
@@ -108,7 +124,7 @@ public class MainGUI extends JFrame {
         mainPanel.add(outputFolderPathField);
         mainPanel.add(selectOutputFolderButton);
         mainPanel.add(generateButton);
-
+        mainPanel.add(splitCheckBox);
         
         getContentPane().add(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
