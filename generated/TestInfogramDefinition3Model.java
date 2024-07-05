@@ -9,9 +9,9 @@ public class TestInfogramDefinitionModel {
     private TestInfogramEnum1Type enum1;
     private TestInfogramEnum2Type enum2;
     private double percentage;
-    private ArrayList<GeoPoisitionType> pointList;
+    private ArrayList<GeoPoisitionType3> pointList;
     private short pointListSize;
-    private DummyThingType dummyThingName;
+    private ArrayList<DummyDummyDummy> dummyThingName;
 
     // Getters and Setters
     public long getId() {
@@ -50,10 +50,10 @@ public class TestInfogramDefinitionModel {
     public void setPercentage(double Percentage) {
         this.Percentage = Percentage;
     }
-    public ArrayList<GeoPoisitionType> getPointList() {
+    public ArrayList<GeoPoisitionType3> getPointList() {
         return PointList;
     }
-    public void setPointList(ArrayList<GeoPoisitionType> PointList) {
+    public void setPointList(ArrayList<GeoPoisitionType3> PointList) {
         this.PointList = PointList;
     }
     public short getPointListSize() {
@@ -62,10 +62,10 @@ public class TestInfogramDefinitionModel {
     public void setPointListSize(short PointListSize) {
         this.PointListSize = PointListSize;
     }
-    public DummyThingType getDummyThingName() {
+    public ArrayList<DummyDummyDummy> getDummyThingName() {
         return DummyThingName;
     }
-    public void setDummyThingName(DummyThingType DummyThingName) {
+    public void setDummyThingName(ArrayList<DummyDummyDummy> DummyThingName) {
         this.DummyThingName = DummyThingName;
     }
 }
